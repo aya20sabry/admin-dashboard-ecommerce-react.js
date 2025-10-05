@@ -1,33 +1,41 @@
-// src/components/layout/Navbar.jsx
-import { Bell, User, Menu } from "lucide-react";
+import { Bell, MessageSquare, Search } from "lucide-react";
 
-export default function Navbar({ onMenuClick }) {
+export default function Header() {
   return (
-    <header className="flex items-center justify-between bg-white shadow px-4 sm:px-6 py-3">
-      {/* Mobile menu button */}
-      <div className="flex items-center gap-3">
-        <button
-          className="p-2 rounded-md hover:bg-gray-100 sm:hidden"
-          aria-label="Open sidebar"
-          onClick={onMenuClick}
-        >
-          <Menu className="w-6 h-6 text-gray-700" />
-        </button>
-        {/* Logo */}
-        <h1 className="text-xl font-bold text-gray-800 hidden sm:block">Admin Dashboard</h1>
+    <header className="flex items-center justify-between bg-white px-6 py-3 shadow-sm">
+      {/* Logo */}
+     
+      {/* Search */}
+      <div className="relative w-1/3">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+        <input
+          type="text"
+          placeholder="Search product"
+          className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
 
-      {/* Right Side */}
+      {/* Icons + Profile */}
       <div className="flex items-center gap-4">
-        {/* Notification */}
-        <button className="p-2 rounded-full hover:bg-gray-100">
-          <Bell className="w-5 h-5 text-gray-600" />
+        <button className="relative">
+          <Bell size={20} className="text-gray-600" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
-        {/* User Avatar */}
+        <button>
+          <MessageSquare size={20} className="text-gray-600" />
+        </button>
+
         <div className="flex items-center gap-2">
-          <User className="w-6 h-6 text-gray-600" />
-          <span className="text-sm font-medium">Admin</span>
+          <img
+            src="https://i.pravatar.cc/40"
+            alt="profile"
+            className="w-8 h-8 rounded-full"
+          />
+          <div className="text-sm">
+            <p className="font-medium">Guy Hawkins</p>
+            <p className="text-gray-400 text-xs">Admin</p>
+          </div>
         </div>
       </div>
     </header>
