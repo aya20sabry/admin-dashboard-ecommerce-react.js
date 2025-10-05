@@ -1,11 +1,21 @@
 // src/components/layout/Navbar.jsx
-import { Bell, User } from "lucide-react";
+import { Bell, User, Menu } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar({ onMenuClick }) {
   return (
-    <header className="flex items-center justify-between bg-white shadow px-6 py-3">
-      {/* Logo */}
-      <h1 className="text-xl font-bold text-gray-800">Admin Dashboard</h1>
+    <header className="flex items-center justify-between bg-white shadow px-4 sm:px-6 py-3">
+      {/* Mobile menu button */}
+      <div className="flex items-center gap-3">
+        <button
+          className="p-2 rounded-md hover:bg-gray-100 sm:hidden"
+          aria-label="Open sidebar"
+          onClick={onMenuClick}
+        >
+          <Menu className="w-6 h-6 text-gray-700" />
+        </button>
+        {/* Logo */}
+        <h1 className="text-xl font-bold text-gray-800 hidden sm:block">Admin Dashboard</h1>
+      </div>
 
       {/* Right Side */}
       <div className="flex items-center gap-4">
