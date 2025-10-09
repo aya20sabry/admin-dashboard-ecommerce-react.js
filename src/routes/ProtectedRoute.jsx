@@ -1,13 +1,20 @@
-import React from "react";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-// import { useAuth } from "../hooks/useAuth";
 
-const ProtectedRoute = ({ children }) => {
-//   const { user } = useAuth(); // hook بيرجع حالة المستخدم
-//   if (!user) {
-    return <Navigate to="/" replace />;
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+  const { user } = useSelector((state) => state.auth);
+  const savedUser = JSON.parse(localStorage.getItem("user"));
+  const role = user?.role || savedUser?.role;
+
+  if (!role) {
+    return <Navigate to="/login" replace />;
   }
-//   return children;
-// };
+
+  if (!allowedRoles.includes(role)) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 export default ProtectedRoute;

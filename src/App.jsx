@@ -1,13 +1,8 @@
-
-import { BrowserRouter as Router } from "react-router-dom";
+import React from "react";
 import AppRoutes from "./routes/AppRoutes";
 
-function App() {
-  return (
-    <Router>
-    <AppRoutes/>
-  </Router>
-  );
-}
+const App = () => {
+  return <AppRoutes />; // مفيش BrowserRouter هنا
+};
 
 export default App;
