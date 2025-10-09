@@ -58,7 +58,7 @@ const AppRoutes = () => {
       <Route
         path="/product/bag"
         element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["admin","seller"]}>
             <Layout>
               <Bag />
             </Layout>
@@ -68,7 +68,7 @@ const AppRoutes = () => {
       <Route
         path="/product/tshirt"
         element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["admin", "seller"]}>
             <Layout>
               <TShirt />
             </Layout>
@@ -78,7 +78,7 @@ const AppRoutes = () => {
       <Route
         path="/product/jacket"
         element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["admin","seller"]}>
             <Layout>
               <Jacket />
             </Layout>
@@ -88,7 +88,7 @@ const AppRoutes = () => {
       <Route
         path="/product/sneakers"
         element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["admin","seller"]}>
             <Layout>
               <Sneakers />
             </Layout>

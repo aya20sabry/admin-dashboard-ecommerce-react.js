@@ -1,88 +1,94 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../store/slices/authSlice';
-import axiosInstance from '../../Api/axiosInstance';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../store/slices/authSlice";
+import axiosInstance from "../../Api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post('/user/login', { email, password });
-      const { token, userName, email: userEmail, role } = response.data.data; // ✅ لاحظي التعديل هنا
+      const response = await axiosInstance.post("/user/login", { email, password });
+      const { token, userName, email: userEmail, role } = response.data.data;
 
-      // خزني البيانات في الـ store و localStorage
       dispatch(loginSuccess({ user: { userName, email: userEmail, role }, token }));
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify({ userName, email: userEmail, role }));
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify({ userName, email: userEmail, role }));
 
-      // توجيه حسب الدور
+      Swal.fire({
+        icon: "success",
+        title: "Login Successfully!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
       const userRole = role?.toLowerCase();
-
-      if (userRole === 'admin') {
-        Swal.fire({
-            icon: 'success',
-            title: 'login successfuly',
-          }).then(()=>{
-            navigate('/admin/dashboard');
-
-          })
-      } else if (userRole === 'seller') {
-        Swal.fire({
-            icon: 'success',
-            title: 'login successfuly',
-          }).then(()=>{
-            navigate('/seller');
-
-          })
-      } else {
-        Swal.fire({
-            icon: 'success',
-            title: 'login successfuly',
-        });
-        navigate('/login');
-      }
-      
-
-
+      if (userRole === "admin") navigate("/admin/dashboard");
+      else if (userRole === "seller") navigate("/seller");
+      else navigate("/");
     } catch (err) {
-      console.error(err.response?.data || err.message);
-     
-    //   alert(err.response?.data?.message || 'Invalid email or password');
+      Swal.fire({
+        icon: "error",
+        title: "Invalid email or password",
+      });
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded-2xl shadow-md w-96">
-        <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <motion.div
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="bg-gray-900/60 backdrop-blur-lg border border-gray-700 rounded-3xl shadow-2xl p-10 w-[420px] text-white"
+      >
+        {/* Animation for Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
         >
-          Login
-        </button>
-      </form>
+          Welcome Back 
+        </motion.h2>
+
+        <form onSubmit={handleLogin} className="space-y-5">
+          <motion.input
+            whileFocus={{ scale: 1.03 }}
+            type="email"
+            placeholder="Email Address"
+            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 rounded-xl px-5 py-3 text-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <motion.input
+            whileFocus={{ scale: 1.03 }}
+            type="password"
+            placeholder="Password"
+            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 rounded-xl px-5 py-3 text-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.2 }}
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-white text-lg font-semibold py-3 rounded-xl shadow-md transition"
+          >
+            Login
+          </motion.button>
+        </form>
+      </motion.div>
     </div>
   );
 };
