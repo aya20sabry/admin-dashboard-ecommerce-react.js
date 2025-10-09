@@ -1,9 +1,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import Login from "../pages/login/login";
 import Layout from "../components/layout/Layout";
+import ProtectedRoute from "./ProtectedRoute";
 
-// Pages
+// Admin Pages
 import Overview from "../pages/Overview/Overview";
 import Bag from "../pages/Product/Bag";
 import Jacket from "../pages/Product/Jacket";
@@ -14,86 +15,121 @@ import Users from "../pages/Users/Users";
 import Settings from "../pages/Settings/Settings";
 import Transaction from "../pages/Transaction/Transaction";
 
-
+// Seller Page
+import Seller from "../pages/seller/seller";
 
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Route */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Admin Routes */}
       <Route
-        path="/"
+        path="/admin/dashboard"
         element={
-          <Layout>
-            <Overview />
-          </Layout>
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Overview />
+            </Layout>
+          </ProtectedRoute>
         }
       />
-
       <Route
         path="/users"
         element={
-          <Layout>
-            <Users />
-          </Layout>
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Users />
+            </Layout>
+          </ProtectedRoute>
         }
       />
-
       <Route
         path="/settings"
         element={
-          <Layout>
-            <Settings />
-          </Layout>
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Settings />
+            </Layout>
+          </ProtectedRoute>
         }
       />
-        <Route
+      <Route
         path="/product/bag"
         element={
-          <Layout>
-            <Bag />
-          </Layout>
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Bag />
+            </Layout>
+          </ProtectedRoute>
         }
-      />  <Route
-      path="/product/tshirt"
-      element={
-        <Layout>
-          <TShirt />
-        </Layout>
-      }
-    />  <Route
-    path="/product/jacket"
-    element={
-      <Layout>
-        <Jacket />
-      </Layout>
-    }
-  /> 
-   <Route
-  path="/product/sneakers"
-  element={
-    <Layout>
-      <Sneakers />
-    </Layout>
-  }
-/>
-<Route
-  path="/sales-report"
-  element={
-    <Layout>
-      <SalesReport />
-    </Layout>
-  }
-/>  
- <Route
-  path="/transaction"
-  element={
-    <Layout>
-      <Transaction />
-    </Layout>
-  }
-/>
+      />
+      <Route
+        path="/product/tshirt"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <TShirt />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/product/jacket"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Jacket />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/product/sneakers"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Sneakers />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sales-report"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <SalesReport />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/transaction"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Transaction />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
 
-      {/* أي Route مش موجود يرجع للصفحة الرئيسية */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Seller Dashboard */}
+      <Route
+        path="/seller"
+        element={
+          <ProtectedRoute allowedRoles={["seller"]}>
+            <Layout>
+              <Seller />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Any undefined path */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 };
