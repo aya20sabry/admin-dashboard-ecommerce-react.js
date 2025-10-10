@@ -154,7 +154,8 @@ console.log(selectedCategoryId);
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <label className="text-sm text-gray-600">Filter by Category</label>
+
+        {/* <label className="text-sm text-gray-600">Filter by Category</label>
         <select
           className="border rounded-md p-2"
           value={selectedCategoryId}
@@ -170,7 +171,7 @@ console.log(selectedCategoryId);
               {c?.name?.en} / {c?.name?.ar}
             </option>
           ))}
-        </select>
+        </select> */}
 
         <input
           type="text"
