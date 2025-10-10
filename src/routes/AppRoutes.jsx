@@ -6,6 +6,8 @@ import ProtectedRoute from "./ProtectedRoute";
 
 // Admin Pages
 import Overview from "../pages/Overview/Overview";
+import Categories from "../pages/Categories/Categories";
+import Subcategories from "../pages/Subcategories/Subcategories";
 import Bag from "../pages/Product/Bag";
 import Jacket from "../pages/Product/Jacket";
 import Sneakers from "../pages/Product/Sneakers";
@@ -46,6 +48,26 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/categories"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Categories />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/subcategories"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Layout>
+              <Subcategories />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/settings"
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
@@ -58,7 +80,7 @@ const AppRoutes = () => {
       <Route
         path="/product/bag"
         element={
-          <ProtectedRoute allowedRoles={["admin","seller"]}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <Layout>
               <Bag />
             </Layout>
@@ -68,7 +90,7 @@ const AppRoutes = () => {
       <Route
         path="/product/tshirt"
         element={
-          <ProtectedRoute allowedRoles={["admin", "seller"]}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <Layout>
               <TShirt />
             </Layout>
@@ -78,7 +100,7 @@ const AppRoutes = () => {
       <Route
         path="/product/jacket"
         element={
-          <ProtectedRoute allowedRoles={["admin","seller"]}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <Layout>
               <Jacket />
             </Layout>
@@ -88,7 +110,7 @@ const AppRoutes = () => {
       <Route
         path="/product/sneakers"
         element={
-          <ProtectedRoute allowedRoles={["admin","seller"]}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <Layout>
               <Sneakers />
             </Layout>
