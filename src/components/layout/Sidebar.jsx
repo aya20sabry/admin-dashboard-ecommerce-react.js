@@ -8,6 +8,8 @@ import {
   FiFileText,
   FiBarChart2,
   FiSettings,
+  FiTag,
+  FiList,
   FiHelpCircle,
   FiChevronDown,
   FiLogOut,
@@ -203,6 +205,28 @@ export default function Sidebar({ isOpen = false, onClose }) {
               <div className="mt-4 px-1 text-[11px] font-semibold text-gray-400 tracking-wide mb-2">
                 TOOLS
               </div>
+
+              <NavLink
+                to="/categories"
+                className={({ isActive }) =>
+                  `${baseItemClasses} ${isActive ? activeItemClasses : ""}`
+                }
+                onClick={handleNavigate}
+              >
+                <FiTag />
+                <span>Categories</span>
+              </NavLink>
+
+              <NavLink
+                to="/subcategories"
+                className={({ isActive }) =>
+                  `${baseItemClasses} ${isActive ? activeItemClasses : ""}`
+                }
+                onClick={handleNavigate}
+              >
+                <FiList />
+                <span>Subcategories</span>
+              </NavLink>
 
               <NavLink
                 to="/settings"
