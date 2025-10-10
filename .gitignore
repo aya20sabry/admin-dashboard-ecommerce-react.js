@@ -1,42 +1,24 @@
 # Dependencies
 node_modules/
 
-# Build output
-/dist/
-/build/
-
-# Local env files
+# Environment variables
 .env
-.env.local
-.env.*.local
+.env.*
+
+# Build outputs
+dist/
+build/
 
 # Logs
-logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Editor directories and files
+# Editor/OS
+.DS_Store
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
 
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Caches
-.cache/
-.parcel-cache/
-node_modules/.vite/
-
-# Hosting/platform
-.vercel/
-.netlify/
-
-# Misc
-public/vite.svg
+# Vite cache
+.vite/
