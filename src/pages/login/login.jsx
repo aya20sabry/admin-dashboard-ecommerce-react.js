@@ -1,45 +1,10 @@
-import React, { useState } from "react";
+// src/pages/login/Login.jsx
+import React from "react";
 import { motion } from "framer-motion";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../store/slices/authSlice";
-import axiosInstance from "../../Api/axiosInstance";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useLoginViewModel } from "../../viewmodels-state/useLoginViewModel";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axiosInstance.post("/user/login", { email, password });
-      const { token, userName, email: userEmail, role } = response.data.data;
-
-      dispatch(loginSuccess({ user: { userName, email: userEmail, role }, token }));
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify({ userName, email: userEmail, role }));
-
-      Swal.fire({
-        icon: "success",
-        title: "Login Successfully!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-
-      const userRole = role?.toLowerCase();
-      if (userRole === "admin") navigate("/admin/dashboard");
-      else if (userRole === "seller") navigate("/seller");
-      else navigate("/");
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid email or password",
-      });
-    }
-  };
+  const { email, password, setEmail, setPassword, handleLogin } = useLoginViewModel();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
@@ -49,14 +14,13 @@ const Login = () => {
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="bg-gray-900/60 backdrop-blur-lg border border-gray-700 rounded-3xl shadow-2xl p-10 w-[420px] text-white"
       >
-        {/* Animation for Title */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
         >
-          Welcome Back 
+          Welcome Back
         </motion.h2>
 
         <form onSubmit={handleLogin} className="space-y-5">

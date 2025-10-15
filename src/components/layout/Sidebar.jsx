@@ -158,7 +158,7 @@ export default function Sidebar({ isOpen = false, onClose }) {
               </div>
 
               <NavLink
-                to="/"
+                to="/admin/dashboard"
                 end
                 className={({ isActive }) =>
                   `${baseItemClasses} ${isActive ? activeItemClasses : ""}`
