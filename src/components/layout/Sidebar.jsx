@@ -141,11 +141,11 @@ export default function Sidebar({ isOpen = false, onClose }) {
                 T-Shirt
               </Link>
               <Link
-                to="/product/bag"
+                to="/product/allproduct"
                 onClick={handleNavigate}
                 className="block px-3 py-1.5 rounded hover:bg-gray-100"
               >
-                Bag
+                All Product
               </Link>
             </div>
           )}
