@@ -4,38 +4,41 @@ import Layout from "../components/layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import { motion } from "framer-motion";
 
-// ✅ Lazy-loaded pages
+// ✅ IMPORTANT: تأكد من default export في كل الصفحات
 const Login = lazy(() => import("../pages/login/login"));
 const Overview = lazy(() => import("../pages/Overview/Overview"));
 const Categories = lazy(() => import("../pages/Categories/Categories"));
 const Subcategories = lazy(() => import("../pages/Subcategories/Subcategories"));
-const Bag = lazy(() => import("../pages/Product/Bag"));
+
+// ✅ تأكد من أن الملفات دي exported صح
+// const Bag = lazy(() => import("../pages/Product/Bag"));
 const Jacket = lazy(() => import("../pages/Product/Jacket"));
 const Sneakers = lazy(() => import("../pages/Product/Sneakers"));
 const TShirt = lazy(() => import("../pages/Product/TShirt"));
+
 const SalesReport = lazy(() => import("../pages/Reports/SalesReport"));
 const Users = lazy(() => import("../pages/Users/Users"));
 const Settings = lazy(() => import("../pages/Settings/Settings"));
 const Transaction = lazy(() => import("../pages/Transaction/Transaction"));
 const Seller = lazy(() => import("../pages/seller/seller"));
 
-// ✨ Loading Animation Component
+// ✅ إضافة ProductList
+const ProductList = lazy(() => import("../pages/Product/productlist"));
+
 const LoadingScreen = () => (
   <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-    {/* Spinner Animation */}
     <motion.div
       className="w-20 h-20 border-4 border-transparent border-t-blue-500 border-l-purple-500 rounded-full"
       animate={{ rotate: 360 }}
       transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
     />
-    {/* Animated Text */}
     <motion.h2
-      className="mt-8 text-2xl font-semibold tracking-wide bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+      className="mt-8 text-2xl font-semibold"
       initial={{ opacity: 0 }}
       animate={{ opacity: [0, 1, 0.7, 1] }}
-      transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}
+      transition={{ duration: 2, repeat: Infinity }}
     >
-      Loading your dashboard...
+      Loading...
     </motion.h2>
   </div>
 );
@@ -44,7 +47,6 @@ const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
-        {/* Public Route */}
         <Route path="/login" element={<Login />} />
 
         {/* Admin Routes */}
@@ -58,6 +60,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/users"
           element={
@@ -68,6 +71,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/categories"
           element={
@@ -78,6 +82,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/subcategories"
           element={
@@ -88,6 +93,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/settings"
           element={
@@ -98,16 +104,30 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
+        {/* ✅ صفحة المنتجات الجديدة */}
         <Route
-          path="/product/bag"
+          path="/products"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["admin", "seller"]}>
               <Layout>
-                <Bag />
+                <ProductList />
               </Layout>
             </ProtectedRoute>
           }
         />
+        
+        <Route
+          path="/product/allproduct"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Layout>
+                <ProductList />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/product/tshirt"
           element={
@@ -118,6 +138,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/product/jacket"
           element={
@@ -128,6 +149,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/product/sneakers"
           element={
@@ -138,6 +160,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/sales-report"
           element={
@@ -148,6 +171,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/transaction"
           element={
@@ -159,7 +183,6 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Seller Dashboard */}
         <Route
           path="/seller"
           element={
@@ -171,7 +194,6 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Any undefined path */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Suspense>
@@ -179,3 +201,4 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
+
