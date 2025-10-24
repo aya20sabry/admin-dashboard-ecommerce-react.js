@@ -8,13 +8,9 @@ import { motion } from "framer-motion";
 const Login = lazy(() => import("../pages/login/login"));
 const Overview = lazy(() => import("../pages/Overview/Overview"));
 const Categories = lazy(() => import("../pages/Categories/Categories"));
-const Subcategories = lazy(() => import("../pages/Subcategories/Subcategories"));
-
-// ✅ تأكد من أن الملفات دي exported صح
-// const Bag = lazy(() => import("../pages/Product/Bag"));
-const Jacket = lazy(() => import("../pages/Product/Jacket"));
-const Sneakers = lazy(() => import("../pages/Product/Sneakers"));
-const TShirt = lazy(() => import("../pages/Product/TShirt"));
+const Subcategories = lazy(
+  () => import("../pages/Subcategories/Subcategories"),
+);
 
 const SalesReport = lazy(() => import("../pages/Reports/SalesReport"));
 const Users = lazy(() => import("../pages/Users/Users"));
@@ -60,7 +56,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/users"
           element={
@@ -71,7 +67,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/categories"
           element={
@@ -82,7 +78,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/subcategories"
           element={
@@ -93,7 +89,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/settings"
           element={
@@ -104,8 +100,8 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
-        {/* ✅ صفحة المنتجات الجديدة */}
+
+        {/* Product List Route */}
         <Route
           path="/products"
           element={
@@ -116,51 +112,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
-        <Route
-          path="/product/allproduct"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <Layout>
-                <ProductList />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/product/tshirt"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <Layout>
-                <TShirt />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/product/jacket"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <Layout>
-                <Jacket />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/product/sneakers"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <Layout>
-                <Sneakers />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        
+
         <Route
           path="/sales-report"
           element={
@@ -171,7 +123,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/transaction"
           element={
@@ -201,4 +153,3 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
-
