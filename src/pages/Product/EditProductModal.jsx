@@ -19,7 +19,7 @@ const EditProductModal = ({ productId, onSubmit, onClose, isUpdating }) => {
       setFormData({
         name: product.name?.en || "",
         price: product.price || 0,
-        discount: 0, 
+        discount: 0,
         stock: product.stock || 0,
         brand: product.brand || "",
         description: product.description?.en || "",
@@ -55,7 +55,7 @@ const EditProductModal = ({ productId, onSubmit, onClose, isUpdating }) => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
         <div className="bg-white rounded-lg p-8 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
           <p className="text-gray-600">Loading product data...</p>
@@ -66,7 +66,7 @@ const EditProductModal = ({ productId, onSubmit, onClose, isUpdating }) => {
 
   if (error) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
         <div className="bg-white rounded-lg p-8 max-w-md w-full text-center">
           <div className="text-5xl mb-4">⚠️</div>
           <p className="text-red-600 mb-4">{error}</p>
@@ -82,7 +82,7 @@ const EditProductModal = ({ productId, onSubmit, onClose, isUpdating }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-lg w-full max-w-2xl my-8">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center rounded-t-lg">
@@ -213,7 +213,9 @@ const EditProductModal = ({ productId, onSubmit, onClose, isUpdating }) => {
           {/* Discount Preview */}
           {formData.discount > 0 && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-1">Price after discount:</p>
+              <p className="text-sm text-gray-600 mb-1">
+                Price after discount:
+              </p>
               <p className="text-2xl font-bold text-green-600">
                 $
                 {(

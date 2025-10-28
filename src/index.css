@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Force LTR direction globally */
+html,
+body {
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+* {
+    direction: ltr;
+}
+
+/* Only allow RTL for specific Arabic content */
+[dir="rtl"],
+.rtl {
+    direction: rtl;
+    text-align: right;
+}

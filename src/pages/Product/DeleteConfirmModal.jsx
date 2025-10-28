@@ -2,7 +2,7 @@ import React from "react";
 
 const DeleteConfirmModal = ({ product, onConfirm, onCancel, isLoading }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-md w-full p-6">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
@@ -10,7 +10,8 @@ const DeleteConfirmModal = ({ product, onConfirm, onCancel, isLoading }) => {
           </div>
           <h2 className="text-lg font-bold mb-2">Delete Confirmation</h2>
           <p className="text-gray-600 mb-4">
-            Are you sure you want to delete the product <strong>{product.name}</strong>?
+            Are you sure you want to delete the product{" "}
+            <strong>{product.name}</strong>?
           </p>
           <div className="flex justify-center gap-3">
             <button
