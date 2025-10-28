@@ -87,7 +87,7 @@ const AddProductModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg overflow-auto">
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="flex items-center justify-between">

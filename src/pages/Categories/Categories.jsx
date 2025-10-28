@@ -1,18 +1,20 @@
 // src/pages/Categories/Categories.jsx
 import React from "react";
+import { Plus, X, Search } from "lucide-react";
+import ResizableTable from "../../components/common/ResizableTable";
+import Pagination from "../../components/common/Pagination";
 import { useCategoriesViewModel } from "../../viewmodels-state/useCategoriesViewModel";
-import { Search, Edit2, Trash2, Plus, X, Filter } from "lucide-react";
 
 export default function Categories() {
   const {
+    items,
+    total,
     page,
     limit,
     query,
     form,
     editingId,
     error,
-    items,
-    total,
     isLoading,
     isCreating,
     isUpdating,
@@ -45,9 +47,43 @@ export default function Categories() {
     }
   };
 
+  // ✅ Define table columns
+  const columns = [
+    {
+      key: "name.en",
+      title: "Name (EN)",
+      render: (value, item) => (
+        <div className="text-sm font-medium text-gray-900">
+          {item?.name?.en || "-"}
+        </div>
+      ),
+    },
+    {
+      key: "name.ar",
+      title: "Name (AR)",
+      render: (value, item) => (
+        <div className="text-sm text-gray-600" dir="rtl">
+          {item?.name?.ar || "-"}
+        </div>
+      ),
+    },
+    {
+      key: "description",
+      title: "Description",
+      render: (value, item) => (
+        <div className="text-sm text-gray-500 max-w-xs truncate">
+          {item?.description?.en || item?.description?.ar || "-"}
+        </div>
+      ),
+    },
+  ];
+
+  // Calculate total pages
+  const totalPages = Math.ceil(total / limit);
+
   return (
     <div className="min-h-screen space-y-4 sm:space-y-6">
-      {/* Header Section - Mobile Optimized */}
+      {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
@@ -68,9 +104,8 @@ export default function Categories() {
         </button>
       </div>
 
-      {/* Search & Filter Section - Mobile First */}
+      {/* Search Section */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-        {/* Search Input */}
         <div className="relative flex-1">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
@@ -89,34 +124,35 @@ export default function Categories() {
             aria-label="Search categories"
           />
         </div>
-
-        {/* Items Per Page Selector */}
-        <div className="flex items-center gap-2">
-          <label
-            htmlFor="limit-select"
-            className="text-sm text-gray-600 whitespace-nowrap hidden sm:block"
-          >
-            Show:
-          </label>
-          <select
-            id="limit-select"
-            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 tap-highlight-transparent touch-manipulation bg-white min-w-[80px]"
-            value={limit}
-            onChange={(e) => {
-              setLimit(Number(e.target.value));
-              setPage(1);
-            }}
-            aria-label="Items per page"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
-        </div>
       </div>
 
-      {/* Create/Edit Form - Mobile Optimized Modal/Card */}
+      {/* ✅ ResizableTable Component - With column resizing! */}
+      <ResizableTable
+        data={items}
+        columns={columns}
+        loading={isLoading}
+        onEdit={handleEdit}
+        onDelete={(item) => onDelete(item._id)}
+        emptyMessage="No categories found"
+        emptyIcon="📂"
+        rowKey="_id"
+        tableId="categories-table"
+      />
+
+      {/* ✅ Pagination Component - Clean and reusable */}
+      {items.length > 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={total}
+          itemsPerPage={limit}
+          onPageChange={setPage}
+          onItemsPerPageChange={setLimit}
+          itemsLabel="categories"
+        />
+      )}
+
+      {/* Create/Edit Form Modal */}
       {showForm && (
         <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div
@@ -293,213 +329,6 @@ export default function Categories() {
           </div>
         </div>
       )}
-
-      {/* Categories List - Mobile Optimized Cards/Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {/* List Header */}
-        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-900">
-            All Categories
-          </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            {total} {total === 1 ? "category" : "categories"} total
-          </p>
-        </div>
-
-        {/* Loading State */}
-        {isLoading && items.length === 0 ? (
-          <div className="p-8 sm:p-12 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-blue-600"></div>
-            <p className="mt-4 text-gray-500">Loading categories...</p>
-          </div>
-        ) : items.length === 0 ? (
-          // Empty State
-          <div className="p-8 sm:p-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-              <Filter size={32} className="text-gray-400" aria-hidden="true" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No categories found
-            </h3>
-            <p className="text-gray-500 mb-6">
-              {query
-                ? "Try adjusting your search"
-                : "Get started by creating a category"}
-            </p>
-            {!query && (
-              <button
-                onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors min-h-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                <Plus size={18} aria-hidden="true" />
-                Add Your First Category
-              </button>
-            )}
-          </div>
-        ) : (
-          <>
-            {/* Mobile Card Layout */}
-            <div className="divide-y divide-gray-200 sm:hidden">
-              {items.map((category) => (
-                <div key={category._id} className="p-4 space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 text-base mb-1 truncate">
-                        {category?.name?.en}
-                      </h3>
-                      <p className="text-sm text-gray-600 truncate">
-                        {category?.name?.ar}
-                      </p>
-                      {(category?.description?.en ||
-                        category?.description?.ar) && (
-                        <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-                          {category?.description?.en ||
-                            category?.description?.ar}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(category)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium rounded-lg transition-colors min-h-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      aria-label={`Edit ${category?.name?.en}`}
-                    >
-                      <Edit2 size={16} aria-hidden="true" />
-                      <span>Edit</span>
-                    </button>
-                    <button
-                      onClick={() => onDelete(category._id)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg transition-colors min-h-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-red-500"
-                      aria-label={`Delete ${category?.name?.en}`}
-                    >
-                      <Trash2 size={16} aria-hidden="true" />
-                      <span>Delete</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Desktop Table Layout */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full" role="table">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                    >
-                      Name (EN)
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                    >
-                      Name (AR)
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                    >
-                      Description
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {items.map((category) => (
-                    <tr
-                      key={category._id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {category?.name?.en}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600" dir="rtl">
-                          {category?.name?.ar}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500 max-w-xs truncate">
-                          {category?.description?.en ||
-                            category?.description?.ar ||
-                            "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => handleEdit(category)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-sm font-medium rounded-lg transition-colors min-h-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-amber-500"
-                            aria-label={`Edit ${category?.name?.en}`}
-                          >
-                            <Edit2 size={14} aria-hidden="true" />
-                            <span>Edit</span>
-                          </button>
-                          <button
-                            onClick={() => onDelete(category._id)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors min-h-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-red-500"
-                            aria-label={`Delete ${category?.name?.en}`}
-                          >
-                            <Trash2 size={14} aria-hidden="true" />
-                            <span>Delete</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-
-        {/* Pagination - Mobile Optimized */}
-        {items.length > 0 && (
-          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50">
-            <div className="flex flex-col xs:flex-row items-center justify-between gap-3">
-              {/* Page Info */}
-              <div className="text-sm text-gray-600 order-2 xs:order-1">
-                Page {page} of {Math.ceil(total / limit)}
-                <span className="hidden sm:inline"> • {total} total</span>
-              </div>
-
-              {/* Pagination Buttons */}
-              <div className="flex items-center gap-2 order-1 xs:order-2">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-touch min-w-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  aria-label="Previous page"
-                >
-                  <span className="hidden sm:inline">Previous</span>
-                  <span className="sm:hidden">Prev</span>
-                </button>
-                <button
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={
-                    items.length < limit &&
-                    (query ? true : page * limit >= total)
-                  }
-                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-touch min-w-touch tap-highlight-transparent touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  aria-label="Next page"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
