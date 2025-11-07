@@ -26,6 +26,9 @@ export const createProduct = (product) => {
     
 
     subcategory: product.subcategoryId?.name?.en || "",
+    subcategoryId: typeof product.subcategoryId === 'string' 
+      ? product.subcategoryId 
+      : product.subcategoryId?._id || "",
     category: product.subcategoryId?.categoryId?.name?.en || "",
     
     

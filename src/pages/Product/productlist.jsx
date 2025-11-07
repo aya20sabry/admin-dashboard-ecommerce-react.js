@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { Plus } from "lucide-react";
 import { useProductsViewModel } from "../../viewmodels-state/useProductsViewModel";
-import ProductCard from "./ProductCard";
 import ProductDetailsModal from "./ProductDetailsModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import EditProductModal from "./EditProductModal";
 import AddProductModal from "./AddProductModal";
+import ProductSearchAndFilters from "../../components/Product/ProductSearchAndFilters";
 import ResizableTable from "../../components/common/ResizableTable";
 import Pagination from "../../components/common/Pagination";
 import { toast } from "react-hot-toast";
@@ -12,8 +13,21 @@ import { toast } from "react-hot-toast";
 const ProductList = () => {
   const {
     products,
+    total,
     loading,
     error,
+    page,
+    limit,
+    query,
+    filters,
+    appliedFilters,
+    hasActiveFilters,
+    setPage,
+    setLimit,
+    setQuery,
+    updateFilter,
+    applyFilters,
+    clearFilters,
     deleteProduct,
     isDeleting,
     updateProduct,
@@ -29,8 +43,6 @@ const ProductList = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [productIdToEdit, setProductIdToEdit] = useState(null);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
 
   const handleViewDetails = (product) => {
     setSelectedProduct(product);
@@ -73,6 +85,11 @@ const ProductList = () => {
         toast.error(error.message || "Failed to delete product");
       },
     });
+  };
+
+  const handleClearAll = () => {
+    setQuery("");
+    clearFilters();
   };
 
   // Define table columns for table view
@@ -122,94 +139,85 @@ const ProductList = () => {
     },
   ];
 
-  // Paginate products for table view
-  const paginatedProducts = products.slice((page - 1) * limit, page * limit);
-  const totalPages = Math.ceil(products.length / limit);
-
-  if (loading)
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mb-4"></div>
-        <p className="text-base md:text-lg text-gray-600">
-          Loading products...
-        </p>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">⚠️</div>
-          <p className="text-red-600 text-lg font-semibold">{error}</p>
-        </div>
-      </div>
-    );
-
-  if (!Array.isArray(products) || products.length === 0)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">📦</div>
-          <p className="text-gray-500 text-lg">No products available</p>
-        </div>
-      </div>
-    );
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">🛍️ Products</h1>
-            <p className="text-gray-600 mt-1 text-sm">
-              Total {products.length} products
-            </p>
+      <div className="bg-white shadow-sm  z-10">
+        <div className="max-w-7xl mx-auto px-6 py-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">🛍️ Products</h1>
+              <p className="text-gray-600 mt-1 text-sm">
+                {query ? `Found ${total} products` : hasActiveFilters ? `Filtered ${total} products` : `Total ${total} products`}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium shadow-md transition-all duration-200 hover:shadow-lg text-sm"
+            >
+              <Plus size={20} />
+              Add New Product
+            </button>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium shadow-md transition-all duration-200 hover:shadow-lg text-sm"
-          >
-            + Add New Product
-          </button>
+
+          {/* Search and Filter Component */}
+          <ProductSearchAndFilters
+            searchQuery={query}
+            onSearchChange={setQuery}
+            filters={filters}
+            appliedFilters={appliedFilters}
+            onFilterChange={updateFilter}
+            onApplyFilters={applyFilters}
+            onClearAll={handleClearAll}
+            hasActiveFilters={hasActiveFilters}
+          />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="space-y-6">
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div>
+                <p className="text-red-800 font-medium">Error loading products</p>
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            </div>
+          )}
+
           <ResizableTable
-            data={paginatedProducts}
+            data={products}
             columns={tableColumns}
             loading={loading}
             onView={handleViewDetails}
             onEdit={handleEdit}
             onDelete={handleDeleteClick}
-            emptyMessage="No products found"
+            emptyMessage={query ? "No products found matching your search" : hasActiveFilters ? "No products match your filters" : "No products found"}
             emptyIcon="📦"
             rowKey="id"
             tableId="products-table"
           />
 
           {/* Pagination */}
-          {products.length > 0 && (
+          {total > 0 && (
             <Pagination
               currentPage={page}
               totalPages={totalPages}
-              totalItems={products.length}
+              totalItems={total}
               itemsPerPage={limit}
               onPageChange={setPage}
-              onItemsPerPageChange={(newLimit) => {
-                setLimit(newLimit);
-                setPage(1);
-              }}
+              onItemsPerPageChange={setLimit}
               itemsLabel="products"
             />
           )}
         </div>
       </div>
 
-      {/* المودالات */}
+      {/* Modals */}
       {showDetailsModal && selectedProduct && (
         <ProductDetailsModal
           product={selectedProduct}
